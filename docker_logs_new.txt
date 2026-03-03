@@ -1,0 +1,43 @@
+docker : INFO:     Started server process [1]
+At line:1 char:1
++ docker logs orbit-vt 2>&1 | Out-File -FilePath 
+C:\ORBIT\backend\voice ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (INF 
+   O:     Started server process [1]:String) []  
+  , RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+INFO:     127.0.0.1:51684 - "GET /health HTTP/1.1" 200 OK
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 
+(Press CTRL+C to quit)
+INFO:     172.17.0.1:34390 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41456 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46074 - "GET /health HTTP/1.1" 200 OK
+INFO:     172.17.0.1:54918 - "GET /health HTTP/1.1" 200 OK
+INFO:     172.17.0.1:54922 - "POST /api/voice-translation/translate-text HTTP/1.1" 200 OK
+Downloading video from URL to /tmp/orbit_dl_295255d085ba4baaa6a590403c5f75f7.mp4 ...
+Downloaded 0.5 MB
+Extracting audio with ffmpeg...
+ffmpeg stderr: :0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 640x360, 341 kb/s, 29.97 fps, 29.97 tbr, 30k tbn (default)
+      Metadata:
+        handler_name    : VideoHandler
+        vendor_id       : [0][0][0][0]
+Output #0, wav, to '/tmp/orbit_audio_2f38252cecd84712916983ced4d450f2.wav':
+[out#0/wav @ 0x5f8ceef6ee40] Output file does not contain any stream
+Error opening output file /tmp/orbit_audio_2f38252cecd84712916983ced4d450f2.wav.
+Error opening output files: Invalid argument
+
+process_audio error: ffmpeg failed: :0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 640x360, 341 kb/s, 29.97 fps, 29.97 tbr, 30k tbn (default)
+      Metadata:
+        handler_name    : VideoHandler
+        vendor_id       : [0][0][0][0]
+Output #0, wav, to '/tmp/orbit_audio_2f38252cecd84712916983ced4d450f2.wav':
+[out#0/wav @ 0x5f8ceef6ee40] Output file does not contain any stream
+Error opening output file /tmp/orbit_audio_2f38252cecd84712916983ced4d450f2.wav.
+Error opening output files: Invalid argument
+
+INFO:     172.17.0.1:54926 - "POST /api/voice-translation/translate HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:41692 - "GET /health HTTP/1.1" 200 OK

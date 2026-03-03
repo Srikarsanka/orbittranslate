@@ -1,0 +1,20 @@
+INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     127.0.0.1:37524 - "GET /health HTTP/1.1" 200 OK
+Downloading video from URL to /tmp/orbit_dl_44624f78208341f4bb8c9df6cb145679.webm ...
+Downloaded 7.3 MB
+Extracting audio with ffmpeg...
+Audio extracted to /tmp/orbit_audio_41ee1254e1824343be10c52ae527c6d2.wav
+Loading Whisper 'base' model...
+Whisper model loaded.
+Transcribing with Whisper...
+Transcribed 0 segments, 0 chars.
+No speech detected in the audio. Falling back gracefully.
+Generating TTS in 'en'...
+TTS saved to /tmp/orbit_tts_7e5440353d5f421baf648cd261911dc7.mp3
+INFO:     172.17.0.1:50792 - "POST /api/voice-translation/translate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44866 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36724 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37154 - "GET /health HTTP/1.1" 200 OK

@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-multipart
+faster-whisper
+deep-translator
+gTTS
+pydantic==2.3.0
+requests==2.31.0
+httpx

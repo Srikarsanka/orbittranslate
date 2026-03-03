@@ -1,0 +1,38 @@
+INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     127.0.0.1:44364 - "GET /health HTTP/1.1" 200 OK
+INFO:     172.17.0.1:40122 - "POST /api/voice-translation/translate-text HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58406 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44400 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41050 - "GET /health HTTP/1.1" 200 OK
+Downloading video from URL to /tmp/orbit_dl_c05d90e08fa44fa292a953386adaddc3.webm ...
+Downloaded 7.3 MB
+Extracting audio with ffmpeg...
+Audio extracted to /tmp/orbit_audio_cef3bf92b43d43ba9a37afcfcccf03d3.wav
+Loading Whisper 'base' model...
+Whisper model loaded.
+Transcribing with Whisper...
+Transcribed 0 segments, 0 chars.
+process_audio error: No speech detected in the audio.
+INFO:     172.17.0.1:37076 - "POST /api/voice-translation/translate HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:51216 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44562 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56554 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37706 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38902 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59418 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33682 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34768 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57158 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48924 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55808 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59252 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32850 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50992 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47432 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57882 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51418 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42888 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56006 - "GET /health HTTP/1.1" 200 OK
