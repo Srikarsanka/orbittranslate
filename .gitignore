@@ -1,7 +1,26 @@
 venv/
 __pycache__/
 *.pyc
+*.pyo
 .env
 node_modules/
 dist/
 build/
+
+# Log files
+*.log
+*.txt
+!requirements.txt
+
+# Test outputs
+test_output*.mp3
+
+# IDE
+.vscode/
+.idea/
+
+# Docker
+docker_logs*.txt
+docker_live_logs.txt
+orbit_logs.txt
+output.log
