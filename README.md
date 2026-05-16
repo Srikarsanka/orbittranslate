@@ -4,10 +4,10 @@
 
 <p>
   <img src="https://img.shields.io/badge/Python-3.10-3776AB?style=for-the-badge&logo=python&logoColor=white" />
-  <img src="https://img.shields.io/badge/FastAPI-0.104-009688?style=for-the-badge&logo=fastapi&logoColor=white" />
+  <img src="https://img.shields.io/badge/FastAPI-Latest-009688?style=for-the-badge&logo=fastapi&logoColor=white" />
   <img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white" />
   <img src="https://img.shields.io/badge/Whisper-AI-FF6F00?style=for-the-badge&logo=openai&logoColor=white" />
-  <img src="https://img.shields.io/badge/Azure-Deploy-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white" />
+  <img src="https://img.shields.io/badge/HuggingFace-Deployed-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black" />
 </p>
 
 <p>
@@ -27,71 +27,109 @@
 
 ---
 
+## 🔗 Deployment & Repositories
+
+| Resource | Link |
+|----------|------|
+| **Live API** | [`https://srikar048-orbit-voice-translation.hf.space`](https://srikar048-orbit-voice-translation.hf.space) |
+| **Health Check** | [`https://srikar048-orbit-voice-translation.hf.space/health`](https://srikar048-orbit-voice-translation.hf.space/health) |
+| **GitHub Repo** | [`Srikarsanka/orbittranslate`](https://github.com/Srikarsanka/orbittranslate) |
+| **HF Space** | [`srikar048/orbit-voice-translation`](https://huggingface.co/spaces/srikar048/orbit-voice-translation) |
+| **Parent Project** | [`Srikarsanka/orbitai`](https://github.com/Srikarsanka/orbitai) |
+
+---
+
 ## ✨ Features
 
 | Feature | Description |
 |---------|-------------|
-| 🎙️ **AI Transcription** | Whisper `base` model with VAD for accurate speech-to-text |
-| 🌍 **Multi-Language** | Telugu, Tamil, Kannada, Malayalam, Hindi + 10 more languages |
-| 🔊 **Text-to-Speech** | Translated audio output via Google TTS |
-| 📹 **WebM Support** | Handles browser-recorded webm files with timestamp fixes |
+| 🎙️ **AI Transcription** | Whisper `small` model with VAD for accurate multilingual speech-to-text |
+| 🌍 **16 Languages** | Telugu, Tamil, Kannada, Malayalam, Hindi, French, German, Spanish + 8 more |
+| 🔊 **Text-to-Speech** | Translated audio output via Google TTS (gTTS) |
+| 📹 **WebM Support** | Handles browser-recorded webm files with async timestamp fixes |
+| 📝 **Timestamped Subtitles** | Returns segments with start/end times for subtitle rendering |
 | ⚡ **REST API** | FastAPI with health checks, text translation, and full pipeline |
-| 🐳 **Dockerized** | One-command deploy with pre-loaded Whisper model |
+| 🐳 **Dockerized** | One-command deploy with pre-loaded Whisper model at build time |
 
 ---
 
 ## 🏗️ Architecture
 
 ```mermaid
-graph LR
-    A[🎬 Frontend<br/>Recording Player] -->|video URL + lang| B[📡 Node.js Backend<br/>Port 5000]
-    B -->|proxy POST| C[🐳 Voice Translation<br/>Docker · Port 8001]
-    C --> D[🎙️ FFmpeg<br/>Extract Audio]
-    D --> E[🤖 Whisper AI<br/>Transcribe]
-    E --> F[🌍 Google Translate<br/>Translate Text]
-    F --> G[🔊 gTTS<br/>Generate Speech]
-    G -->|MP3 audio| B
-    B -->|audio blob| A
+graph TD
+    subgraph ORBIT Ecosystem
+        FE["Angular Frontend<br/>Vercel"]
+        BE["Node.js Backend<br/>Render · Port 5000"]
+    end
 
-    style C fill:#6366f1,color:#fff,stroke:#4f46e5
-    style E fill:#f59e0b,color:#fff,stroke:#d97706
-    style F fill:#10b981,color:#fff,stroke:#059669
+    subgraph Voice Translation Service - HuggingFace Spaces
+        FastAPI["FastAPI Server<br/>Port 7860"]
+        DL["Video Downloader<br/>requests + streaming"]
+        FFmpeg["FFmpeg<br/>Audio Extractor"]
+        Whisper["Whisper AI<br/>small model · int8"]
+        Trans["Google Translate<br/>deep-translator"]
+        TTS["Google TTS<br/>gTTS · MP3"]
+    end
+
+    FE -->|"Recording Player<br/>Translate Button"| BE
+    BE -->|"Proxy POST<br/>/api/voice-translation/*"| FastAPI
+
+    FastAPI --> DL
+    DL -->|"Download .webm/.mp4"| FFmpeg
+    FFmpeg -->|"16kHz mono WAV"| Whisper
+    Whisper -->|"English text + segments"| Trans
+    Trans -->|"Translated text"| TTS
+    TTS -->|"MP3 audio file"| FastAPI
+    FastAPI -->|"MP3 + text headers"| BE
+    BE -->|"Audio blob"| FE
+
+    style FastAPI fill:#6366f1,color:#fff,stroke:#4f46e5
+    style Whisper fill:#f59e0b,color:#fff,stroke:#d97706
+    style Trans fill:#10b981,color:#fff,stroke:#059669
+    style TTS fill:#3b82f6,color:#fff,stroke:#2563eb
 ```
+
+### How It's Used in ORBIT
+
+| Use Case | Flow |
+|----------|------|
+| **Translate Recording** | Student clicks "Translate" → Backend proxies to this service → Returns MP3 audio in target language |
+| **Transcribe Subtitles** | Recording player requests subtitles → Service returns timestamped segments → Player renders captions |
+| **Translate Subtitles** | Student switches language → Service translates each segment → Player updates captions |
+| **Text Translation** | Quick text translation for UI elements via lightweight endpoint |
 
 ---
 
-## 🚀 Quick Start
+## ⚙️ Pipeline Workflow
 
-### Prerequisites
-
-- **Docker** installed and running
-- **Port 8001** available
-
-### 1️⃣  Build & Run
-
-```bash
-# Build the Docker image
-docker build -t orbit-voice-translation .
-
-# Run the container
-docker run -d --name orbit-vt -p 8001:8001 orbit-voice-translation
 ```
-
-### 2️⃣  Verify
-
-```bash
-# Health check
-curl http://localhost:8001/health
-# → { "status": "healthy", "model": "base" }
-```
-
-### 3️⃣  Test Translation
-
-```bash
-# Quick text translation
-curl -X POST http://localhost:8001/api/voice-translation/translate-text \
-  -H "Content-Type: application/json" \
-  -d '{"text": "Hello, welcome to class", "target_lang": "te"}'
+┌──────────────────────────────────────────────────────────┐
+│                 VOICE TRANSLATION PIPELINE                │
+├──────────────────────────────────────────────────────────┤
+│                                                           │
+│  1. 📥 DOWNLOAD         Download video from Cloudinary    │
+│        │                 URL (supports .webm, .mp4, .mp3) │
+│        │                                                  │
+│  2. 🔍 PROBE            FFprobe checks for audio stream   │
+│        │                 (rejects silent videos)           │
+│        │                                                  │
+│  3. 🎵 EXTRACT          FFmpeg → 16kHz mono WAV           │
+│        │                 + async resampling for WebM       │
+│        │                 + speech padding (400ms)          │
+│        │                                                  │
+│  4. 🤖 TRANSCRIBE       Whisper AI (small model, int8)    │
+│        │                 + VAD filter (300ms silence)      │
+│        │                 + beam_size=5 for accuracy        │
+│        │                                                  │
+│  5. 🌍 TRANSLATE        Google Translate API               │
+│        │                 Auto-detect source → target lang  │
+│        │                                                  │
+│  6. 🔊 TEXT-TO-SPEECH   Google TTS → MP3 audio            │
+│        │                                                  │
+│  7. 📤 RESPOND          Return MP3 + text headers         │
+│                          Temp files auto-cleaned           │
+│                                                           │
+└──────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -101,22 +139,47 @@ curl -X POST http://localhost:8001/api/voice-translation/translate-text \
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/health` | Service health check |
-| `POST` | `/api/voice-translation/translate` | Full pipeline: video → translated audio |
-| `POST` | `/api/voice-translation/translate-text` | Text-only translation |
-| `POST` | `/api/voice-translation/translate-json` | Full pipeline with JSON response |
+| `POST` | `/api/voice-translation/translate` | Full pipeline: video → translated MP3 audio |
+| `POST` | `/api/voice-translation/translate-json` | Full pipeline via JSON body |
+| `POST` | `/api/voice-translation/translate-text` | Text-only translation (lightweight) |
+| `POST` | `/api/voice-translation/transcribe` | Timestamped transcript segments for subtitles |
 
-### Full Translation Request
+### Example: Full Translation
 
 ```bash
-curl -X POST http://localhost:8001/api/voice-translation/translate \
-  -F "video_url=http://example.com/recording.webm" \
+curl -X POST https://srikar048-orbit-voice-translation.hf.space/api/voice-translation/translate \
+  -F "video_url=https://res.cloudinary.com/xxx/video/upload/rec_abc.webm" \
   -F "target_language=te"
+# Returns: MP3 audio file in Telugu
 ```
 
-**Response:** MP3 audio file with headers:
-- `X-Original-Text` — transcribed English text
-- `X-Translated-Text` — translated text
-- `Content-Type: audio/mpeg`
+### Example: Text Translation
+
+```bash
+curl -X POST https://srikar048-orbit-voice-translation.hf.space/api/voice-translation/translate-text \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Hello, welcome to class", "target_lang": "te"}'
+```
+
+### Example: Transcribe with Subtitles
+
+```bash
+curl -X POST https://srikar048-orbit-voice-translation.hf.space/api/voice-translation/transcribe \
+  -H "Content-Type: application/json" \
+  -d '{"videoUrl": "https://res.cloudinary.com/xxx/video/upload/rec_abc.webm", "lang": "te"}'
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "segments": [
+    {"start": 0.0, "end": 3.5, "text": "Hello class", "translated": "హలో క్లాస్"},
+    {"start": 3.5, "end": 7.2, "text": "Today we will learn arrays", "translated": "ఈ రోజు మనం arrays నేర్చుకుందాం"}
+  ],
+  "totalSegments": 2
+}
+```
 
 ---
 
@@ -139,109 +202,47 @@ curl -X POST http://localhost:8001/api/voice-translation/translate \
 
 ---
 
+## 🚀 Local Development
+
+```bash
+cd backend/voice_translation
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+```
+
+## 🐳 Docker Deployment
+
+```bash
+docker build -t orbit-voice-translation .
+docker run -d --name orbit-vt -p 8001:8001 orbit-voice-translation
+curl http://localhost:8001/health
+```
+
+---
+
 ## 📂 Project Structure
 
 ```
 voice_translation/
-├── 📄 main.py              # FastAPI app entry point
-├── 📄 routes.py             # API route definitions
-├── 📄 service.py            # Core translation pipeline
-├── 📄 requirements.txt      # Python dependencies
-├── 🐳 Dockerfile            # Docker build configuration
-├── 📄 test_voice_translation.py   # Pipeline test suite
-├── 📄 test_multilang.py     # Multi-language test suite
+├── 📄 main.py                    # FastAPI app entry point + CORS
+├── 📄 routes.py                  # API route definitions (translate, transcribe, text)
+├── 📄 service.py                 # Core pipeline (download → extract → transcribe → translate → TTS)
+├── 📄 requirements.txt           # Python dependencies
+├── 🐳 Dockerfile                 # Docker build (HuggingFace-compatible, Whisper pre-downloaded)
+├── 📄 test_voice_translation.py  # Pipeline test suite
+├── 📄 test_multilang.py          # Multi-language test suite
 └── 📄 .gitignore
-```
-
----
-
-## ⚙️ Pipeline Workflow
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    VOICE TRANSLATION PIPELINE                │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  1. 📥 DOWNLOAD          Download video from URL             │
-│        │                                                     │
-│  2. 🔍 PROBE             FFprobe checks for audio stream     │
-│        │                                                     │
-│  3. 🎵 EXTRACT           FFmpeg → 16kHz mono WAV             │
-│        │                 + async resampling for WebM          │
-│        │                                                     │
-│  4. 🤖 TRANSCRIBE        Whisper AI (base model)             │
-│        │                 + VAD filter (tuned params)          │
-│        │                                                     │
-│  5. 🌍 TRANSLATE         Google Translate API                │
-│        │                 English → Target Language            │
-│        │                                                     │
-│  6. 🔊 TEXT-TO-SPEECH    Google TTS → MP3 audio              │
-│        │                                                     │
-│  7. 📤 RESPOND           Return MP3 + text headers           │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 🐳 Docker Commands
-
-```bash
-# Build
-docker build -t orbit-voice-translation .
-
-# Run (detached)
-docker run -d --name orbit-vt -p 8001:8001 orbit-voice-translation
-
-# View logs
-docker logs orbit-vt --tail 20
-
-# Stop & Remove
-docker stop orbit-vt && docker rm orbit-vt
-
-# Rebuild after code changes
-docker rm -f orbit-vt && \
-docker build -t orbit-voice-translation . && \
-docker run -d --name orbit-vt -p 8001:8001 orbit-voice-translation
-```
-
----
-
-## ☁️ Azure Deployment
-
-```bash
-# Tag for Azure Container Registry
-docker tag orbit-voice-translation <your-acr>.azurecr.io/orbit-voice-translation:latest
-
-# Push to ACR
-docker push <your-acr>.azurecr.io/orbit-voice-translation:latest
-
-# Deploy to Azure App Service / Container Instance
-az container create \
-  --resource-group <rg-name> \
-  --name orbit-voice-translation \
-  --image <your-acr>.azurecr.io/orbit-voice-translation:latest \
-  --ports 8001 \
-  --cpu 2 --memory 4
-```
-
----
-
-## 🧪 Testing
-
-```bash
-# Run basic pipeline test
-python test_voice_translation.py
-
-# Run multi-language test (Telugu, Tamil, Kannada, Malayalam)
-python test_multilang.py
 ```
 
 ---
 
 <div align="center">
 
-### Built with ❤️ for ORBIT
+### Built with ❤️ for ORBIT Virtual Classroom
+
+**Deployed on [Hugging Face Spaces](https://huggingface.co/spaces/srikar048/orbit-voice-translation)**
 
 <p>
   <img src="https://img.shields.io/badge/Whisper-OpenAI-412991?style=flat-square&logo=openai" />
